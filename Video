@@ -1,0 +1,31 @@
+# Cài thư viện (chạy 1 lần)
+# pip install moviepy gtts
+
+from gtts import gTTS
+from moviepy.editor import *
+
+# 1️⃣ Tạo giọng nói
+text = "Mỗi hành động nhỏ góp phần làm nên thành phố xanh, sạch, đẹp. Hãy bỏ rác đúng nơi quy định, vì môi trường, vì chính chúng ta."
+tts = gTTS(text=text, lang='vi', tld='com.vn', slow=False)
+tts.save("voice.mp3")
+
+# 2️⃣ Tạo video
+# Dùng ảnh/video nền có sẵn (ví dụ file background.mp4 hoặc background.jpg)
+clip_bg = VideoFileClip("background.mp4").resize(height=720)
+
+# 3️⃣ Thêm âm thanh
+audio = AudioFileClip("voice.mp3")
+
+# 4️⃣ Thêm nhạc nền nhẹ (nếu có, ví dụ music.mp3)
+# Nếu không có, bỏ dòng này
+music = AudioFileClip("music.mp3").volumex(0.2)
+final_audio = CompositeAudioClip([audio, music])
+clip_final = clip_bg.set_audio(final_audio)
+
+# 5️⃣ Thêm chữ cuối video
+txt = TextClip("HÃY BỎ RÁC ĐÚNG NƠI QUY ĐỊNH",
+               fontsize=70, color='white', font='Arial-Bold', bg_color='green')\
+      .set_duration(4).set_position('center')
+
+video = concatenate_videoclips([clip_final, txt])
+video.write_videofile("hay_bo_rac_dung_noi_quy_dinh.mp4", fps=24)
